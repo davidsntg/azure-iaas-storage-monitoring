@@ -1,0 +1,1889 @@
+{
+    "version": "Notebook/1.0",
+    "items": [
+      {
+        "type": 9,
+        "content": {
+          "version": "KqlParameterItem/1.0",
+          "crossComponentResources": [
+            "/subscriptions/5c2beebc-f37c-4b54-97f4-a856fc06b31c"
+          ],
+          "parameters": [
+            {
+              "id": "3468ab76-405e-4f31-9e87-09cb33fd3736",
+              "version": "KqlParameterItem/1.0",
+              "name": "subscription",
+              "label": "Subscription",
+              "type": 2,
+              "isRequired": true,
+              "isGlobal": true,
+              "query": "resourcecontainers\r\n | where type == \"microsoft.resources/subscriptions\"\r\n | project id, label=name",
+              "crossComponentResources": [
+                "value::all"
+              ],
+              "typeSettings": {
+                "additionalResourceOptions": [],
+                "showDefault": false
+              },
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "value": ""
+            },
+            {
+              "id": "a49535c0-9ebc-45e3-b1ba-363c97cedf84",
+              "version": "KqlParameterItem/1.0",
+              "name": "vm",
+              "label": "Virtual Machine",
+              "type": 2,
+              "isRequired": true,
+              "query": "resources\r\n| where type == \"microsoft.compute/virtualmachines\"\r\n| project id, label=name",
+              "crossComponentResources": [
+                "{subscription}"
+              ],
+              "typeSettings": {
+                "resourceTypeFilter": {
+                  "microsoft.compute/virtualmachines": true,
+                  "microsoft.all/virtualmachines": true,
+                  "microsoft.devtestlab/labs/virtualmachines": true
+                },
+                "additionalResourceOptions": [],
+                "showDefault": false
+              },
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "value": ""
+            },
+            {
+              "id": "0a1292e2-3518-4cd0-b2a9-23bfa361a22c",
+              "version": "KqlParameterItem/1.0",
+              "name": "timeRange",
+              "label": "Time Range",
+              "type": 4,
+              "isRequired": true,
+              "typeSettings": {
+                "selectableValues": [
+                  {
+                    "durationMs": 300000
+                  },
+                  {
+                    "durationMs": 900000
+                  },
+                  {
+                    "durationMs": 1800000
+                  },
+                  {
+                    "durationMs": 3600000
+                  },
+                  {
+                    "durationMs": 14400000
+                  },
+                  {
+                    "durationMs": 43200000
+                  },
+                  {
+                    "durationMs": 86400000
+                  },
+                  {
+                    "durationMs": 172800000
+                  },
+                  {
+                    "durationMs": 259200000
+                  },
+                  {
+                    "durationMs": 604800000
+                  },
+                  {
+                    "durationMs": 1209600000
+                  },
+                  {
+                    "durationMs": 2419200000
+                  },
+                  {
+                    "durationMs": 2592000000
+                  },
+                  {
+                    "durationMs": 5184000000
+                  },
+                  {
+                    "durationMs": 7776000000
+                  }
+                ],
+                "allowCustom": true
+              },
+              "value": {
+                "durationMs": 14400000
+              }
+            }
+          ],
+          "style": "above",
+          "queryType": 1,
+          "resourceType": "microsoft.resourcegraph/resources"
+        },
+        "name": "parameters - 1"
+      },
+      {
+        "type": 11,
+        "content": {
+          "version": "LinkItem/1.0",
+          "style": "tabs",
+          "links": [
+            {
+              "id": "aee2113b-42d6-46f0-b336-0dfc0ce2fd6e",
+              "cellValue": "selTab",
+              "linkTarget": "parameter",
+              "linkLabel": "VM/Disks infos",
+              "subTarget": "vmdisksinfos",
+              "style": "link"
+            },
+            {
+              "id": "ceee5e4a-9e15-4ee4-b7ca-512155cd5656",
+              "cellValue": "selTab",
+              "linkTarget": "parameter",
+              "linkLabel": "Disk IO/Throughput",
+              "subTarget": "diskiothroughput",
+              "style": "link"
+            },
+            {
+              "id": "3f23a167-5c3b-4fb7-8e35-239c2fad464c",
+              "cellValue": "selTab",
+              "linkTarget": "parameter",
+              "linkLabel": "VM IO capping",
+              "subTarget": "vmiocapping",
+              "style": "link"
+            },
+            {
+              "id": "e5af3f48-2f36-49db-ada0-7545bdae3889",
+              "cellValue": "selTab",
+              "linkTarget": "parameter",
+              "linkLabel": "Disk IO capping",
+              "subTarget": "diskiocapping",
+              "style": "link"
+            },
+            {
+              "id": "790c3386-4ecc-4109-9a01-798da83c4a35",
+              "cellValue": "selTab",
+              "linkTarget": "parameter",
+              "linkLabel": "VM-level Bursting",
+              "subTarget": "vmlevelbursting",
+              "style": "link"
+            },
+            {
+              "id": "d77cfa66-0ec2-4983-97f1-469741aee604",
+              "cellValue": "selTab",
+              "linkTarget": "parameter",
+              "linkLabel": "Disk-level Bursting",
+              "subTarget": "disklevelbursting",
+              "style": "link"
+            }
+          ]
+        },
+        "name": "links - 1"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 1,
+              "content": {
+                "json": "# Disk IO capping\r\n\r\n* **Data Disk IOPS Consumed Percentage**: The percentage calculated by the data disk IOPS completed over the provisioned data disk IOPS. If this amount is at 100%, your application running is IO capped from your data disk's IOPS limit.\r\n* **Data Disk Bandwidth Consumed Percentage**: The percentage calculated by the data disk throughput completed over the provisioned data disk throughput. If this amount is at 100%, your application running is IO capped from your data disk's bandwidth limit.\r\n* **OS Disk IOPS Consumed Percentage**: The percentage calculated by the OS disk IOPS completed over the provisioned OS disk IOPS. If this amount is at 100%, your application running is IO capped from your OS disk's IOPS limit.\r\n* **OS Disk Bandwidth Consumed Percentage**: The percentage calculated by the OS disk throughput completed over the provisioned OS disk throughput. If this amount is at 100%, your application running is IO capped from your OS disk's bandwidth limit.",
+                "style": "info"
+              },
+              "name": "text - 0"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookf9ab1c72-9f70-4cd2-abfc-dab9940d1862",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk IOPS Consumed Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk IOPS Consumed Percentage"
+                        }
+                      ],
+                      "title": "OS Disk IOPS Consumed Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "showPin": false,
+                    "name": "OS Disk IOPS Consumed Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook09c93628-5967-4f93-a04a-eb16e151b947",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Bandwidth Consumed Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Bandwidth Consumed Percentage"
+                        }
+                      ],
+                      "title": "OS Disk Bandwidth Consumed Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Bandwidth Consumed Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "Disk IO capping - OS Disk group"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookec860938-4077-4043-9793-da3d0dda245e",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk IOPS Consumed Percentage",
+                          "aggregation": 4,
+                          "splitBy": "LUN"
+                        }
+                      ],
+                      "title": "Data Disk IOPS Consumed Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk IOPS Consumed Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbooke1c7bc1a-72c9-4b9a-bf7d-7721ef93cc63",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Bandwidth Consumed Percentage",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Bandwidth Consumed Percentage"
+                        }
+                      ],
+                      "title": "Data Disk Bandwidth Consumed Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Bandwidth Consumed Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "Disk IO capping - Data Disk group"
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "selTab",
+          "comparison": "isEqualTo",
+          "value": "diskiocapping"
+        },
+        "name": "Group - Disk IO capping"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 1,
+              "content": {
+                "json": "# Disk IO, throughput and queue depth metrics\r\n\r\n* **OS Disk Queue Depth**: The number of current outstanding IO requests that are waiting to be read from or written to the OS disk.\r\n* **OS Disk Read Bytes/Sec**: The number of bytes that are read in a second from the OS disk.\r\n* **OS Disk Read Operations/Sec**: The number of input operations that are read in a second from the OS disk.\r\n* **OS Disk Write Bytes/Sec**: The number of bytes that are written in a second from the OS disk.\r\n* **OS Disk Write Operations/Sec**: The number of output operations that are written in a second from the OS disk.\r\n* **Data Disk Queue Depth**: The number of current outstanding IO requests that are waiting to be read from or written to the data disk(s).\r\n* **Data Disk Read Bytes/Sec**: The number of bytes that are read in a second from the data disk(s).\r\n* **Data Disk Read Operations/Sec**: The number of input operations that are read in a second from data disk(s).\r\n* **Data Disk Write Bytes/Sec**: The number of bytes that are written in a second from the data disk(s).\r\n* **Data Disk Write Operations/Sec**: The number of output operations that are written in a second from data disk(s).\r\n* **Disk Read Bytes/Sec**: The number of total bytes that are read in a second from all disks attached to a VM.\r\n* **Disk Read Operations/Sec**: The number of input operations that are read in a second from all disks attached to a VM.\r\n* **Disk Write Bytes/Sec**: The number of bytes that are written in a second from all disks attached to a VM.\r\n* **Disk Write Operations/Se**c: The number of output operations that are written in a second from all disks attached to a VM.",
+                "style": "info"
+              },
+              "name": "text - 2"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook77a71eca-6298-4b2d-996b-be20d0b265d7",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Disk Read Bytes",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "Disk Read Bytes/Sec"
+                        }
+                      ],
+                      "title": "Disk Read Bytes/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "customWidth": "25",
+                    "name": "Disk Read Bytes/Sec"
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookb360f157-b651-49b2-90b3-785f0595bde1",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Disk Read Operations/Sec",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "Disk Read Operations/Sec"
+                        }
+                      ],
+                      "title": "Disk Read Operations/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "customWidth": "25",
+                    "name": "Disk Read Operations/Sec"
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook9dd7e3fa-6181-4e51-8ef8-596e534d6730",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Disk Write Bytes",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "Disk Write Bytes/Sec"
+                        }
+                      ],
+                      "title": "Disk Write Bytes/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "customWidth": "25",
+                    "name": "Disk Write Bytes/Sec"
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookba129b0f-fa99-4dc7-8f5f-f0c43f1c992a",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Disk Write Operations/Sec",
+                          "aggregation": 4,
+                          "splitBy": null
+                        }
+                      ],
+                      "title": "Disk Write Operations/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "customWidth": "25",
+                    "name": "Disk Write Operations/Sec"
+                  }
+                ]
+              },
+              "name": "Disk IO/Throughput - All disks attached to a VM",
+              "styleSettings": {
+                "showBorder": true
+              }
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook58a40958-e123-406e-8451-19e492be0136",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Queue Depth",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Queue Depth"
+                        }
+                      ],
+                      "title": "OS Disk Queue Depth",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Queue Depth",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook8ced0737-8472-489c-b754-3644c096901a",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Read Bytes/sec",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Read Bytes/Sec"
+                        }
+                      ],
+                      "title": "OS Disk Read Bytes/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Read Bytes/Sec",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook250e67f9-9a26-460b-b862-cdf2e9b5b742",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Read Operations/Sec",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Read Operations/Sec"
+                        }
+                      ],
+                      "title": "OS Disk Read Operations/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Read Operations/Sec",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook9eb97d2b-133e-4201-a461-1f2befa33257",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Write Bytes/sec",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Write Bytes/Sec"
+                        }
+                      ],
+                      "title": "OS Disk Write Bytes/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Write Bytes/Sec",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookda63e6a3-17f8-42d4-b4bc-50b89e4c8ee9",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Write Operations/Sec",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Write Operations/Sec"
+                        }
+                      ],
+                      "title": "OS Disk Write Operations/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Write Operations/Sec",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "Disk IO/Throughput - OS Disk"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookaead3333-9a09-4f52-81ad-36802c52e84c",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Queue Depth",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Queue Depth"
+                        }
+                      ],
+                      "title": "Data Disk Queue Depth",
+                      "gridSettings": {
+                        "formatters": [
+                          {
+                            "columnMatch": "Subscription",
+                            "formatter": 5
+                          },
+                          {
+                            "columnMatch": "Name",
+                            "formatter": 13,
+                            "formatOptions": {
+                              "linkTarget": "Resource"
+                            }
+                          },
+                          {
+                            "columnMatch": "Data Disk Queue Depth Timeline",
+                            "formatter": 5
+                          },
+                          {
+                            "columnMatch": "microsoft.compute/virtualmachines--Data Disk Queue Depth",
+                            "formatter": 1,
+                            "numberFormat": {
+                              "unit": 0,
+                              "options": null
+                            }
+                          }
+                        ],
+                        "rowLimit": 10000,
+                        "labelSettings": [
+                          {
+                            "columnId": "Data Disk Queue Depth",
+                            "label": "Data Disk Queue Depth"
+                          },
+                          {
+                            "columnId": "Data Disk Queue Depth Timeline",
+                            "label": "Data Disk Queue Depth Timeline"
+                          }
+                        ]
+                      }
+                    },
+                    "name": "Data Disk Queue Depth",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookf3211153-f416-4000-b09d-dfbd9cf6e992",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Read Bytes/sec",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Read Bytes/Sec"
+                        }
+                      ],
+                      "title": "Data Disk Read Bytes/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Read Bytes/Sec",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook388b0cd4-7203-4433-868d-5ff46e79e67b",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 0
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Read Operations/Sec",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Read Operations/Sec"
+                        }
+                      ],
+                      "title": "Data Disk Read Operations/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "showPin": true,
+                    "name": "Data Disk Read Operations/Sec",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook31f7d44f-5233-42ea-8c60-45c819700088",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Write Bytes/sec",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Write Bytes/Sec"
+                        }
+                      ],
+                      "title": "Data Disk Write Bytes/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Write Bytes/Sec",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook1bd3673b-69ef-4b9b-8f60-f392230cb064",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Write Operations/Sec",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Write Operations/Sec"
+                        }
+                      ],
+                      "title": "Data Disk Write Operations/Sec",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Write Operations/Sec",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "Disk IO/Throughput - Data Disk"
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "selTab",
+          "comparison": "isEqualTo",
+          "value": "diskiothroughput"
+        },
+        "name": "Disk IO/Throughput"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 1,
+              "content": {
+                "json": "# VM IO capping\r\n* **VM Cached IOPS Consumed Percentage**: The percentage calculated by the total IOPS completed over the max cached virtual machine IOPS limit. If this amount is at 100%, your application running is IO capped from your VM's cached IOPS limit.\r\n* **VM Cached Bandwidth Consumed Percentage**: The percentage calculated by the total disk throughput completed over the max cached virtual machine throughput. If this amount is at 100%, your application running is IO capped from your VM's cached bandwidth limit.\r\n* **VM uncached IOPS Consumed Percentage**: The percentage calculated by the total IOPS on a virtual machine completed over the max uncached virtual machine IOPS limit. If this amount is at 100%, your application running is IO capped from your VM's uncached IOPS limit.\r\n* **VM Uncached Bandwidth Consumed Percentage**: The percentage calculated by the total disk throughput on a virtual machine completed over the max provisioned virtual machine throughput. If this amount is at 100%, your application running is IO capped from your VM's uncached bandwidth limit.",
+                "style": "info"
+              },
+              "name": "text - 0"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookc78284d3-30a6-4da0-ab26-898f278c414d",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--VM Cached IOPS Consumed Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "VM Cached IOPS Consumed Percentage"
+                        }
+                      ],
+                      "title": "VM Cached IOPS Consumed Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "VM Cached IOPS Consumed Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook1ab07202-3e78-4e58-a359-fbe0c29bef08",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--VM Cached Bandwidth Consumed Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "VM Cached Bandwidth Consumed Percentage"
+                        }
+                      ],
+                      "title": "VM Cached Bandwidth Consumed Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "VM Cached Bandwidth Consumed Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "VM Cached"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookc37ae990-4387-406f-9083-a10f513197a3",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--VM Uncached IOPS Consumed Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "VM Uncached IOPS Consumed Percentage"
+                        }
+                      ],
+                      "title": "VM Uncached IOPS Consumed Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "VM Uncached IOPS Consumed Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookaed5851c-117b-40e9-980f-3ac39c839c96",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--VM Uncached Bandwidth Consumed Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "VM Uncached Bandwidth Consumed Percentage"
+                        }
+                      ],
+                      "title": "VM Uncached Bandwidth Consumed Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "VM Uncached Bandwidth Consumed Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "VM IO capping - VM Uncached"
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "selTab",
+          "comparison": "isEqualTo",
+          "value": "vmiocapping"
+        },
+        "name": "Group - VM IO capping"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 1,
+              "content": {
+                "json": "# VM-level Bursting\r\n\r\n* **VM Uncached Used Burst IO Credits Percentage**: The accumulated percentage of the VM’s uncached IOPS burst used. Emitted on a 5 minute interval.\r\n* **VM Uncached Used Burst BPS Credits Percentage**: The accumulated percentage of the VM’s uncached throughput burst used. Emitted on a 5 minute interval.\r\n* **VM Cached Used Burst IO Credits Percentage**: The accumulated percentage of the VM’s cached IOPS burst used. Emitted on a 5 minute interval.\r\n* **VM Cached Used Burst BPS Credits Percentage**: The accumulated percentage of the VM’s cached IOPS burst used. Emitted on a 5 minute interval.",
+                "style": "info"
+              },
+              "name": "text - 0"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook45434250-2b20-45a3-8834-117128b5b920",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--VM Remote Used Burst IO Credits Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "VM Uncached Used Burst IO Credits Percentage"
+                        }
+                      ],
+                      "title": "VM Uncached Used Burst IO Credits Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "VM Uncached Used Burst IO Credits Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookaa0439d7-ecf1-440d-9652-c1761dff70cc",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--VM Remote Used Burst BPS Credits Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "VM Uncached Used Burst BPS Credits Percentage"
+                        }
+                      ],
+                      "title": "VM Uncached Used Burst BPS Credits Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "VM Uncached Used Burst BPS Credits Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "VM-level Bursting - VM Uncached"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookb3914965-74e5-4215-ad9f-62e9205338f7",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--VM Local Used Burst IO Credits Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "VM Cached Used Burst IO Credits Percentage"
+                        }
+                      ],
+                      "title": "VM Cached Used Burst IO Credits Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "VM Cached Used Burst IO Credits Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook35525879-2ed4-4bff-9c2e-71d36e31444b",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--VM Local Used Burst BPS Credits Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "VM Cached Used Burst BPS Credits Percentage"
+                        }
+                      ],
+                      "title": "VM Cached Used Burst BPS Credits Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "VM Cached Used Burst BPS Credits Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "VM-level Bursting - VM Cached"
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "selTab",
+          "comparison": "isEqualTo",
+          "value": "vmlevelbursting"
+        },
+        "name": "VM-level Bursting"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 1,
+              "content": {
+                "json": "# Disk-level Bursting\r\n\r\n*Premium disks only*.\r\n\r\n* **Data Disk Max Burst Bandwidth**: The throughput limit that the data disk(s) can burst up to.\r\n* **OS Disk Max Burst Bandwidth**: The throughput limit that the OS disk can burst up to.\r\n* **Data Disk Max Burst IOPS**: The IOPS limit that the data disk(s) can burst up to.\r\n* **OS Disk Max Burst IOPS**: The IOPS limit that the OS disk can burst up to.\r\n* **Data Disk Target Bandwidth**: The throughput limit that the data(s) disk can achieve without bursting.\r\n* **OS Disk Target Bandwidth**: The throughput limit that the OS disk can achieve without bursting.\r\n* **Data Disk Target IOPS**: The IOPS limit that the data disk(s) can achieve without bursting.\r\n* **OS Disk Target IOPS**: The IOPS limit that the data disk(s) can achieve without bursting.\r\n* **Data Disk Used Burst BPS Credits Percentage**: The accumulated percentage of the throughput burst used for the data disk(s). Emitted on a 5 minute interval.\r\n* **OS Disk Used Burst BPS Credits Percentage**: The accumulated percentage of the throughput burst used for the OS disk. Emitted on a 5 minute interval.\r\n* **Data Disk Used Burst IO Credits Percentage**: The accumulated percentage of the IOPS burst used for the data disk(s). Emitted on a 5 minute interval.\r\n* **OS Disk Used Burst IO Credits Percentage**: The accumulated percentage of the IOPS burst used for the OS disk. Emitted on a 5 minute interval.",
+                "style": "info"
+              },
+              "name": "text - 0"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook86cc7cda-2ec6-4819-8840-945c52e25c26",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Max Burst Bandwidth",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Max Burst Bandwidth"
+                        }
+                      ],
+                      "title": "OS Disk Max Burst Bandwidth",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Max Burst Bandwidth",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook2aef0888-1f3d-49ed-8847-b09536b0a635",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Max Burst IOPS",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Max Burst IOPS"
+                        }
+                      ],
+                      "title": "OS Disk Max Burst IOPS",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Max Burst IOPS",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook815438de-4771-42d3-a1ff-d7ed223c6bf5",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Target Bandwidth",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Target Bandwidth"
+                        }
+                      ],
+                      "title": "OS Disk Target Bandwidth",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Target Bandwidth",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook5f723ffb-3137-4641-89f3-18574537435a",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Target IOPS",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Target IOPS"
+                        }
+                      ],
+                      "title": "OS Disk Target IOPS",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Target IOPS",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook6a53d883-bca2-4467-8f4c-2e2cb0c55162",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Used Burst BPS Credits Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Used Burst BPS Credits Percentage"
+                        }
+                      ],
+                      "title": "OS Disk Used Burst BPS Credits Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Used Burst BPS Credits Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookabd4b3e5-13db-49eb-8788-521d0e61316a",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--OS Disk Used Burst IO Credits Percentage",
+                          "aggregation": 4,
+                          "splitBy": null,
+                          "columnName": "OS Disk Used Burst IO Credits Percentage"
+                        }
+                      ],
+                      "title": "OS Disk Used Burst IO Credits Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "OS Disk Used Burst IO Credits Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "Disk-level Bursting - OS Disk"
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookb0a80f3f-e6d0-41f9-8e1a-96f9f0b2ad32",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Max Burst Bandwidth",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Max Burst Bandwidth"
+                        }
+                      ],
+                      "title": "Data Disk Max Burst Bandwidth",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Max Burst Bandwidth",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook0c826cbb-e4a9-4561-b01b-54bce3d7ebc2",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Max Burst IOPS",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Max Burst IOPS"
+                        }
+                      ],
+                      "title": "Data Disk Max Burst IOPS",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Max Burst IOPS",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookca379b82-01dd-4e6f-92ed-08904a4b64af",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Target Bandwidth",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Target Bandwidth"
+                        }
+                      ],
+                      "title": "Data Disk Target Bandwidth",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Target Bandwidth",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook5a60d7b3-73ef-4392-aae9-9e43a40f8dc5",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Target IOPS",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Target IOPS"
+                        }
+                      ],
+                      "title": "Data Disk Target IOPS",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Target IOPS",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbook4b2f8305-bdd8-4be7-9b81-b9521388c7ad",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Used Burst BPS Credits Percentage",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Used Burst BPS Credits Percentage"
+                        }
+                      ],
+                      "title": "Data Disk Used Burst BPS Credits Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Used Burst BPS Credits Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  },
+                  {
+                    "type": 10,
+                    "content": {
+                      "chartId": "workbookb5a307dc-bcdf-4759-b2f0-855a40a7951d",
+                      "version": "MetricsItem/2.0",
+                      "size": 0,
+                      "chartType": 2,
+                      "resourceType": "microsoft.compute/virtualmachines",
+                      "metricScope": 0,
+                      "resourceParameter": "vm",
+                      "resourceIds": [
+                        "{vm}"
+                      ],
+                      "timeContextFromParameter": "timeRange",
+                      "timeContext": {
+                        "durationMs": 86400000
+                      },
+                      "metrics": [
+                        {
+                          "namespace": "microsoft.compute/virtualmachines",
+                          "metric": "microsoft.compute/virtualmachines--Data Disk Used Burst IO Credits Percentage",
+                          "aggregation": 4,
+                          "splitBy": "LUN",
+                          "columnName": "Data Disk Used Burst IO Credits Percentage"
+                        }
+                      ],
+                      "title": "Data Disk Used Burst IO Credits Percentage",
+                      "gridSettings": {
+                        "rowLimit": 10000
+                      }
+                    },
+                    "name": "Data Disk Used Burst IO Credits Percentage",
+                    "styleSettings": {
+                      "showBorder": true
+                    }
+                  }
+                ]
+              },
+              "customWidth": "50",
+              "name": "Disk-level Bursting - Data"
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "selTab",
+          "comparison": "isEqualTo",
+          "value": "disklevelbursting"
+        },
+        "name": "Disk-level bursting"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 1,
+              "content": {
+                "json": "# VM / Disks",
+                "style": "info"
+              },
+              "name": "text - 0"
+            },
+            {
+              "type": 1,
+              "content": {
+                "json": "## OS Disk"
+              },
+              "name": "text - 2"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "Resources\r\n| where type == \"microsoft.compute/virtualmachines\"\r\n| where id == \"{vm}\"\r\n| project \r\nosDiskname          = properties.storageProfile.osDisk.name, \r\ndiskSizeGB          = properties.storageProfile.osDisk.diskSizeGB, \r\ncaching             = properties.storageProfile.osDisk.caching,\r\nosDiskId            = tolower(tostring(properties.storageProfile.osDisk.managedDisk.id))\r\n| join kind=leftouter (\r\n Resources \r\n | where type =~ 'microsoft.compute/disks'\r\n | extend osDiskId=tolower(tostring(id))\r\n | where properties !has 'Unattached'\r\n | where properties has 'osType'\r\n | project \r\n diskMBpsReadWrite = properties.diskMBpsReadWrite,\r\n diskIOPSReadWrite = properties.diskIOPSReadWrite,\r\n osType = properties.osType,\r\n tier = properties.tier,\r\n sku = sku.name,\r\n osDiskId\r\n) on $left.osDiskId == $right.osDiskId\r\n| project osDiskId, osType, diskSizeGB, tier, sku, diskIOPSReadWrite, diskMBpsReadWrite, caching",
+                "size": 3,
+                "queryType": 1,
+                "resourceType": "microsoft.resourcegraph/resources",
+                "crossComponentResources": [
+                  "value::all"
+                ]
+              },
+              "showPin": false,
+              "name": "query - 2"
+            },
+            {
+              "type": 1,
+              "content": {
+                "json": "## Data Disks"
+              },
+              "name": "text - 3"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "Resources \r\n| where type == \"microsoft.compute/virtualmachines\"\r\n| where id == '{vm}'\r\n| mv-expand dataDisk=properties.storageProfile.dataDisks\r\n| extend diskId = tolower(tostring(dataDisk.managedDisk.id))\r\n| extend diskName          = dataDisk.name\r\n| extend diskSizeGB  = dataDisk.diskSizeGB\r\n| extend diskCaching             = dataDisk.caching\r\n| extend diskLun = toint(dataDisk.lun)\r\n| extend diskWriteAcceleratorEnabled = dataDisk.writeAcceleratorEnabled\r\n | join kind=leftouter (\r\n Resources \r\n | where type =~ 'microsoft.compute/disks'\r\n | where properties !has \"osType\"\r\n | where properties !has 'Unattached'\r\n | extend diskId=tolower(tostring(id))\r\n | extend diskIOPSReadWrite=properties.diskIOPSReadWrite\r\n | extend diskMBpsReadWrite=properties.diskMBpsReadWrite\r\n | extend tier=properties.tier\r\n | extend encryption=properties.encryption.type\r\n | extend skuName=sku.name\r\n ) on diskId\r\n | project lun=diskLun, diskId, sizeGB=diskSizeGB, tier, sku=skuName, diskIOPSReadWrite, diskMBpsReadWrite, caching=diskCaching, writeAcceleratorEnabled=diskWriteAcceleratorEnabled, encryption\r\n | order by lun asc",
+                "size": 0,
+                "queryType": 1,
+                "resourceType": "microsoft.resourcegraph/resources",
+                "crossComponentResources": [
+                  "value::all"
+                ]
+              },
+              "name": "query - 4"
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "selTab",
+          "comparison": "isEqualTo",
+          "value": "vmdisksinfos"
+        },
+        "name": "VM/Disks infos"
+      }
+    ],
+    "fallbackResourceIds": [
+      "azure monitor"
+    ],
+    "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+  }
